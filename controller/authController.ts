@@ -62,7 +62,7 @@ export const signInUser = async (req: Request, res: Response) => {
   }
 };
 
-export const getUser = async(req:Request,res:Response)=>{
+export const getUsers = async(req:Request,res:Response)=>{
     try {
         const getAllUsers = await authModel.find()
         res.status(HTTP.OK).json({
