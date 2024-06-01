@@ -1,13 +1,17 @@
 import express, { Application } from "express"
 import env from "dotenv"
+import dbConfig from "./config/dbConfig"
+import appConfig from "./appConfig"
 
 env.config()
 const port:number = parseInt(process.env.PORT!)
 
 const app:Application = express()
 
+appConfig(app)
 const server = app.listen(port,()=>{
     console.log(`A server is listening on port:${port}`)
+    dbConfig()
 })
 
 process.on("uncaughtException",(error:Error)=>{

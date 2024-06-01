@@ -1,5 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
+import { HTTP, mainError } from "./error/mainError";
+import { errorHandler } from "./error/errorHandler";
 
 const appConfig = (app: Application) => {
   app.use(express.json()).use(
@@ -18,6 +20,14 @@ const appConfig = (app: Application) => {
         })
     }
   }).all("*",()=>{
-    
+    new mainError({
+      name:"route error",
+      message:"this is as a result of a wrong route",
+      status:HTTP.NOT_FOUND,
+      success:false
+    })
   });
+  app.use(errorHandler)
 };
+
+export default appConfig
