@@ -12,7 +12,7 @@ export interface iTaskData extends iTask,Document{}
 const taskModel = new Schema({
     title:{
         type:String
-    },
+    },  
     priority:{
         type:String
     },

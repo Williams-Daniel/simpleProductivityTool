@@ -1,6 +1,6 @@
 export enum HTTP {
   OK = 200,
-  CREATED = 201,
+  CREATE = 201,
   NOT_FOUND = 404,
   BAD_REQUEST = 400,
 }
