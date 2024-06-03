@@ -2,9 +2,9 @@ import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import { HTTP, mainError } from "./error/mainError";
 import { errorHandler } from "./error/errorHandler";
-import auth from "./router/authRouter"
+import auth from "./router/authRouter";
+import task from "./router/taskRouter";
 const appConfig = (app: Application) => {
-  app.use("/api",auth)
   app
     .use(express.json())
     .use(
@@ -13,6 +13,8 @@ const appConfig = (app: Application) => {
         methods: ["GET", "POST", "PATCH", "DELETE"],
       })
     )
+    .use("/api", auth)
+    .use("/api", task)
     .get("/", (req: Request, res: Response) => {
       try {
         res.status(200).json({

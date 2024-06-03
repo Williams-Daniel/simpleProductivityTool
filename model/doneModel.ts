@@ -1,15 +1,15 @@
 import { Document, Schema, Types, model } from "mongoose";
 
 
-interface iTask{
+interface iDone {
     title:string,
     priority:string,
-    auth:{}   
+    auth:{}    
 }
 
-export interface iTaskData extends iTask,Document{}
+export interface iDoneData extends iDone, Document{}
 
-const taskModel = new Schema({
+const doneModel = new Schema({
     title:{
         type:String
     },
@@ -17,9 +17,10 @@ const taskModel = new Schema({
         type:String
     },
     auth:{
-        type:Types.ObjectId,
+        type: Types.ObjectId,
         ref:"auths"
     }
 })
 
-export default model<iTaskData>("tasks",taskModel) 
+
+export default model<iDoneData>("dones",doneModel)

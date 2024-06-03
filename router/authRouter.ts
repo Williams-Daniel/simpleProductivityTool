@@ -1,12 +1,13 @@
-import express, { Router } from "express"
-import { getOneUser, getUsers, registerUser, signInUser } from "../controller/authController"
+import express from "express"
+import { getOneUser, getUserTask, getUsers, registerUser, signInUser } from "../controller/authController"
 
 
-const router:Router = express.Router()
+const router = express.Router()
 
-router.route("/register-user").post(registerUser);
+router.route("/register").post(registerUser);
 router.route("/sign-in-user").post(signInUser);
-router.route("/get-all-users").post(getUsers);
-router.route("/:UserID/find-one").get(getOneUser);
+router.route("/get-all-users").get(getUsers);
+router.route("/:userID/find-one").get(getOneUser);
+router.route("/:userID/get-user-tasks").get(getUserTask);
 
 export default router

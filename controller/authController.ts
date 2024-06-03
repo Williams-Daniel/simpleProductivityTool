@@ -6,21 +6,19 @@ import { HTTP, mainError } from "../error/mainError";
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const { userName, email, password } = req.body;
-
     const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password, salt);
-
+    const hashed = await bcrypt.hash(password, salt);
     const newUser = await authModel.create({
       userName,
       email,
-      password: hash,
+      password: hashed,
     });
-    return res.status(HTTP.CREATE).json({
-      message: "User has been registered",
+    res.status(HTTP.CREATE).json({
+      message: "User registered successfully",
       data: newUser,
     });
   } catch (error) {
-    return res.status(HTTP.BAD_REQUEST).json({
+    res.status(HTTP.BAD_REQUEST).json({
       message: "Couldn't register user",
       data: error.message,
     });
@@ -37,6 +35,7 @@ export const signInUser = async (req: Request, res: Response) => {
       if (confirmPassword) {
         res.status(HTTP.OK).json({
           message: "Welcome back",
+          data: user._id,
         });
       } else {
         new mainError({
@@ -55,40 +54,71 @@ export const signInUser = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
-    return res.status(HTTP.BAD_REQUEST).json({
+    res.status(HTTP.BAD_REQUEST).json({
       message: "Couldn't register user",
       data: error.message,
     });
   }
 };
 
-export const getUsers = async(req:Request,res:Response)=>{
-    try {
-        const getAllUsers = await authModel.find()
-        res.status(HTTP.OK).json({
-            message:"Gotten all users",
-            data:getAllUsers
-        }) 
-    } catch (error) {
-        res.status(HTTP.OK).json({
-            message:"can't get all user",
-            data:error.message
-        }) 
-    }
-}
+export const getUsers = async (req: Request, res: Response) => {
+  try {
+    const getAllUsers = await authModel.find();
+    res.status(HTTP.OK).json({
+      message: "Gotten all users",
+      data: getAllUsers,
+    });
+  } catch (error) {
+    res.status(HTTP.OK).json({
+      message: "can't get all user",
+      data: error.message,
+    });
+  }
+};
 
-export const getOneUser = async(req:Request,res:Response)=>{
-    try {
-        const {userID} = req.params 
-        const oneUser = await authModel.findById(userID)
-        res.status(HTTP.OK).json({
-            message:"User found",
-            data:oneUser
-        }) 
-    } catch (error) {
-        res.status(HTTP.OK).json({
-            message:"can't find user",
-            data:error.message
-        }) 
+export const getOneUser = async (req: Request, res: Response) => {
+  try {
+    const { userID } = req.params;
+    const oneUser = await authModel.findById(userID);
+    res.status(HTTP.OK).json({
+      message: "User found",
+      data: oneUser,
+    });
+  } catch (error) {
+    res.status(HTTP.OK).json({
+      message: "can't find user",
+      data: error.message,
+    });
+  }
+};
+
+export const getUserTask = async(req:Request,res:Response)=>{
+  try {
+    const {userID} = req.params
+    const user = await authModel.findById(userID)
+    if(user){
+      const userTask = await user.populate({
+        path:"tasks",
+        options:{
+          sort:{createAt:-1}
+        }
+      })
+      res.status(HTTP.OK).json({
+        message:"gotten user's tasks",
+        data:userTask
+      })
+    }else{
+      new mainError({
+        name:"user not found",
+        message:"user not found",
+        status:HTTP.NOT_FOUND,
+        success:false
+      })
     }
+  } catch (error) {
+    res.status(HTTP.NOT_FOUND).json({
+      message:"Couldn't get user's tasks",
+      data:error.message
+    })
+  }
 }
